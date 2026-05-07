@@ -199,3 +199,35 @@ class Reseña {
 
 Cliente --> "*" Reseña
 Producto --> "*" Reseña
+
+' =========================
+' LISTA DE DESEOS
+' =========================
+class ListaDeseos {
+  + agregarProducto(): void
+  + eliminarProducto(): void
+}
+
+Cliente --> "1" ListaDeseos
+ListaDeseos --> "*" Producto
+
+' =========================
+' CARRITO
+' =========================
+class CarritoDeCompras {
+  - total: double
+  + agregarProducto(): void
+  + eliminarProducto(): void
+  + calcularTotal(): double
+}
+
+class ItemCarrito {
+  - cantidad: int
+  - subtotal: double
+}
+
+Cliente "1" --> "1" CarritoDeCompras
+
+CarritoDeCompras "1" *-- "*" ItemCarrito
+
+ItemCarrito "*" --> "1" Producto
