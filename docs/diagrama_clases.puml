@@ -231,3 +231,75 @@ Cliente "1" --> "1" CarritoDeCompras
 CarritoDeCompras "1" *-- "*" ItemCarrito
 
 ItemCarrito "*" --> "1" Producto
+
+' =========================
+' PEDIDOS
+' =========================
+class Pedido {
+  - id: int
+  - fecha: Date
+  - estado: EstadoPedido
+  - total: double
+  + confirmarPedido(): void
+  + cancelarPedido(): void
+}
+
+class ItemPedido {
+  - cantidad: int
+  - subtotal: double
+}
+
+Cliente "1" --> "*" Pedido
+
+Pedido "1" *-- "*" ItemPedido
+
+ItemPedido "*" --> "1" Producto
+
+' =========================
+' PAGOS
+' =========================
+interface MetodoPago {
+  + procesarPago(): boolean
+}
+
+class PagoTarjeta {
+  - numeroTarjeta: String
+}
+
+class PagoPayPal {
+  - correoPayPal: String
+}
+
+class PagoNequi {
+  - numeroCelular: String
+}
+
+MetodoPago <|.. PagoTarjeta
+MetodoPago <|.. PagoPayPal
+MetodoPago <|.. PagoNequi
+
+class Pago {
+  - id: int
+  - fecha: Date
+  - monto: double
+  - estado: EstadoPago
+  + confirmarPago(): boolean
+}
+
+Pedido --> "1" Pago
+
+Pago --> "1" MetodoPago
+
+' =========================
+' ENVÍO
+' =========================
+class Envio {
+  - direccion: String
+  - estado: EstadoEnvio
+  - fechaEntregaEstimada: Date
+  + actualizarEstado(): void
+}
+
+Pedido --> "1" Envio
+
+@enduml
