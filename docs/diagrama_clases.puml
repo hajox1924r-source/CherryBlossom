@@ -1,0 +1,43 @@
+@startuml clases
+
+' =========================
+' USUARIOS
+' =========================
+
+abstract class Usuario {
+    - id: int 
+    - nombre: String 
+    - correo: String 
+    + iniciarSesion(): boolean
+}
+
+class Cliente extends Usuario {
+    direccion: String 
+}
+
+class Administrador extends Usuario {
+    + gestionarProductos(): void
+}
+
+' =========================
+' PRODUCTOS
+' =========================
+
+abstract class Producto {
+    - id: int 
+    - nombre: String 
+    - precio: double 
+    -stock: int 
+    + calcularCostoEnvio(): double 
+}
+
+class Categoria {
+    - nombre: String 
+}
+
+class Franquicia {
+    - nombre: String 
+}
+
+Producto --> Categoria 
+Producto --> Franquicia
