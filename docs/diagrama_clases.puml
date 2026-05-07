@@ -1,93 +1,81 @@
-@startuml clases
+@startuml clases_mejoradas
+
+skinparam classAttributeIconSize 0
+
+' =========================
+' ENUMS
+' =========================
+enum EstadoPedido {
+  Pendiente
+  Pagado
+  Enviado
+  Entregado
+  Cancelado
+}
+
+enum EstadoEnvio {
+  Preparando
+  EnCamino
+  Entregado
+  Retrasado
+}
 
 ' =========================
 ' USUARIOS
 ' =========================
-
 abstract class Usuario {
-    - id: int 
-    - nombre: String 
-    - correo: String 
-    + iniciarSesion(): boolean
+  - id: int
+  - nombre: String
+  - correo: String
+  - contraseña: String
+  + iniciarSesion(): boolean
+  + cerrarSesion(): void
 }
 
-class Cliente extends Usuario {
-    direccion: String 
+class Cliente {
+  - direccion: String
+  - telefono: String
 }
 
-class Administrador extends Usuario {
-    + gestionarProductos(): void
+class Administrador {
+  + gestionarProductos(): void
+  + gestionarPedidos(): void
 }
+
+Usuario <|-- Cliente
+Usuario <|-- Administrador
 
 ' =========================
 ' PRODUCTOS
 ' =========================
-
 abstract class Producto {
-    - id: int 
-    - nombre: String 
-    - precio: double 
-    -stock: int 
-    + calcularCostoEnvio(): double 
+  - id: int
+  - nombre: String
+  - precio: double
+  - stock: int
+  - descripcion: String
 }
 
+abstract class ProductoFisico {
+  - peso: double
+  + calcularCostoEnvio(): double
+}
+
+Producto <|-- ProductoFisico
+
 class Categoria {
-    - nombre: String 
+  - id: int
+  - nombre: String
+  - descripcion: String
 }
 
 class Franquicia {
-    - nombre: String 
+  - id: int
+  - nombre: String
+  - autorOriginal: String
 }
 
-Producto --> Categoria 
-Producto --> Franquicia
+Producto "*" --> "1" Categoria
+Producto "*" --> "1" Franquicia
 
-' =========================
-' PRODUCTOS EDITORIALES
-' =========================
-
-abstract class ProductoEditorial extends Producto {
-    - autor: String
-}
-
-class Manga extends ProductoEditorial 
-class Manhwa extends ProductoEditorial
-class NovelaLigera extends ProductoEditorial
-
-' =========================
-' MERCHANDISING
-' =========================
-
-abstract class Merchandising extends Producto
-
-class Ropa extends Merchandising
-class Accesorio extends Merchandising
-class Poster extends Merchandising
-
-' =========================
-' OTROS PRODUCTOS
-' =========================
-
-class FiguraColeccionable extends Producto 
-class AlbumMuscial extends Producto
-
-' =========================
-' CARRITO
-' =========================
-
-class CarritoDeCompras {
-    + agregarProducto(): void
-    + eliminarProducto(): void
-}
-
-class IntemCarrito {
-    - cantidad: int
-}
-
-Cliente --> CarritoDeCompras 
-CarritoDeCompras --> IntemCarrito
-IntemCarrito --> Producto
-
-' =========================
-' PEDIDOS
-' =========================
+Administrador --> Producto : administra
