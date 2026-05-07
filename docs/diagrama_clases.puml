@@ -13,6 +13,13 @@ enum EstadoPedido {
   Cancelado
 }
 
+enum EstadoPago {
+  Pendiente
+  Aprobado
+  Rechazado
+  Reembolsado
+}
+
 enum EstadoEnvio {
   Preparando
   EnCamino
@@ -79,3 +86,43 @@ Producto "*" --> "1" Categoria
 Producto "*" --> "1" Franquicia
 
 Administrador --> Producto : administra
+
+' =========================
+' IMÁGENES
+' =========================
+class ImagenProducto {
+  - url: String
+  - principal: boolean
+}
+
+Producto "1" *-- "*" ImagenProducto
+
+' =========================
+' PRODUCTOS EDITORIALES
+' =========================
+abstract class ProductoEditorial {
+  - autor: String
+  - editorial: String
+  - numeroPaginas: int
+}
+
+ProductoFisico <|-- ProductoEditorial
+
+class Manga {
+  - tomo: int
+  - isbn: String
+}
+
+class Manhwa {
+  - temporada: int
+  - idioma: String
+}
+
+class NovelaLigera {
+  - volumen: int
+  - ilustrador: String
+}
+
+ProductoEditorial <|-- Manga
+ProductoEditorial <|-- Manhwa
+ProductoEditorial <|-- NovelaLigera
