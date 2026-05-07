@@ -41,3 +41,53 @@ class Franquicia {
 
 Producto --> Categoria 
 Producto --> Franquicia
+
+' =========================
+' PRODUCTOS EDITORIALES
+' =========================
+
+abstract class ProductoEditorial extends Producto {
+    - autor: String
+}
+
+class Manga extends ProductoEditorial 
+class Manhwa extends ProductoEditorial
+class NovelaLigera extends ProductoEditorial
+
+' =========================
+' MERCHANDISING
+' =========================
+
+abstract class Merchandising extends Producto
+
+class Ropa extends Merchandising
+class Accesorio extends Merchandising
+class Poster extends Merchandising
+
+' =========================
+' OTROS PRODUCTOS
+' =========================
+
+class FiguraColeccionable extends Producto 
+class AlbumMuscial extends Producto
+
+' =========================
+' CARRITO
+' =========================
+
+class CarritoDeCompras {
+    + agregarProducto(): void
+    + eliminarProducto(): void
+}
+
+class IntemCarrito {
+    - cantidad: int
+}
+
+Cliente --> CarritoDeCompras 
+CarritoDeCompras --> IntemCarrito
+IntemCarrito --> Producto
+
+' =========================
+' PEDIDOS
+' =========================
