@@ -126,3 +126,76 @@ class NovelaLigera {
 ProductoEditorial <|-- Manga
 ProductoEditorial <|-- Manhwa
 ProductoEditorial <|-- NovelaLigera
+
+' =========================
+' MERCHANDISING
+' =========================
+abstract class Merchandising {
+  - material: String
+}
+
+ProductoFisico <|-- Merchandising
+
+class Ropa {
+  - talla: String
+}
+
+class Accesorio {
+  - tipo: String
+  - material: String
+}
+
+class Poster {
+  - dimensiones: String
+}
+
+Merchandising <|-- Ropa
+Merchandising <|-- Accesorio
+Merchandising <|-- Poster
+
+' =========================
+' OTROS PRODUCTOS
+' =========================
+class FiguraColeccionable {
+  - escala: String
+  - material: String
+}
+
+class AlbumMusical {
+  - artista: String
+  - numeroCanciones: int
+}
+
+ProductoFisico <|-- FiguraColeccionable
+ProductoFisico <|-- AlbumMusical
+
+class ProductoDigital {
+  - formato: String
+  - tamañoMB: double
+  + descargar(): void
+}
+
+Producto <|-- ProductoDigital
+
+' =========================
+' INVENTARIO
+' =========================
+class Inventario {
+  - cantidadDisponible: int
+  - cantidadReservada: int
+  + actualizarStock(): void
+}
+
+Producto --> Inventario
+
+' =========================
+' RESEÑAS
+' =========================
+class Reseña {
+  - calificacion: int
+  - comentario: String
+  - fecha: Date
+}
+
+Cliente --> "*" Reseña
+Producto --> "*" Reseña
