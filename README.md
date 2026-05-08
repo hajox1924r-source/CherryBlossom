@@ -128,19 +128,6 @@ CherryBlossomStore/
 └── 🔗 Enlace
     └── La web se abrirá en: http://127.0.0.1:5500/index.html
 ```
-
-### 🖱️ PRUEBA DE COMUNICACIÓN (Verificación Final)
-
-PRUEBA DE COMUNICACIÓN (Verificación Final)
-
-```
-│
-├── 🛒 Test de Funcionalidad
-│   └── Comprueba que todas funcionalidades sean correctas y se cumplan
-│
-└── 🌸 Test Visual
-    └── Navegar entre categorías para ver el cambio dinámico de fondos
-```
 ---
 
 # 👩‍💻 Autores
