@@ -1,6 +1,6 @@
 # Proyecto final 
 Competencia final 
-# actividad-ecommerce
+## actividad-ecommerce
  
 &gt; **Asignatura:** Programación II  
 &gt; **Tema:** Programación Orientada a Objetos - Java POO
@@ -10,9 +10,9 @@ Competencia final
 🛍️Tienda Virtual de Entretenimiento Asiático
 
 
----
 
-📖 Descripción
+
+## 📖 Descripción
 
 Cherry Blossom es una tienda virtual dedicada a la venta de productos relacionados con el entretenimiento asiático, incluyendo mangas, manhwas, merch de K-pop, álbumes musicales y figuras de anime.
 
@@ -34,7 +34,7 @@ Desarrollar una tienda virtual que permita a los usuarios explorar y adquirir pr
 - Permitir la visualización y consulta de productos disponibles 
 ---
 
-## ⚙️ Funcionalidades
+# ⚙️ Funcionalidades
 
 - ✨ Visualización de productos
 - 🔍 Búsqueda de artículos
@@ -43,7 +43,7 @@ Desarrollar una tienda virtual que permita a los usuarios explorar y adquirir pr
 
 ---
 
-## 🛠️ Tecnologías Utilizadas
+# 🛠️ Tecnologías Utilizadas
 
 | Área | Tecnologías |
 |:----|:----------|
@@ -54,27 +54,115 @@ Desarrollar una tienda virtual que permita a los usuarios explorar y adquirir pr
 
 ---
 
-🏗️ Arquitectura
+# 🏗️ Arquitectura
 
 - 🔹 Backend (API REST)
 - 🔹 Frontend (Interfaz de usuario)
 
 ---
 
-🚀 Cómo Ejecutar
+# 📁 Estructura del Proyecto
 
-🔧 Backend
-
-
-
-💻 Frontend
-
-
+```
+CherryBlossomStore/
+│
+├── 🌐 Frontend/ (Visual Studio Code)
+│   ├── index.html       <-- Estructura, modales y maquetación (Tailwind)
+│   ├── estilo.css       <-- Animaciones personalizadas y diseño premium
+│   └── app.js           <-- Lógica de búsqueda, carrito, fetch y efectos
+│
+└── ☕ Backend/ (Apache NetBeans - Spring Boot)
+    └── src/main/java/com/CherryBlossom/demo/
+        │
+        ├── DemoApplication.java         <-- Clase principal (arranca el servidor)
+        │
+        ├── 🎮 controller/               <-- Los "puentes" que reciben las peticiones
+        │   ├── ProductoController.java
+        │   └── UsuarioController.java
+        │
+        ├── 🧠 service/                  <-- Lógica de negocio (vender, validar)
+        │   ├── ProductoService.java
+        │   └── UsuarioService.java
+        │
+        ├── 📦 repository/               <-- El "almacén" de datos (Listas estáticas)
+        │   ├── ProductoFileRepository.java
+        │   └── UsuarioFileRepository.java
+        │
+        └── 🧩 modelos/ (o paquetes específicos)
+            ├── productos/
+            │   └── Producto.java        <-- Clase base de productos
+            └── usuarios/
+                ├── Usuario.java         <-- Clase padre
+                ├── Administrador.java   <-- Hereda de Usuario
+                └── Cliente.java         <-- Hereda de Usuario
+```
 
 ---
 
-👩‍💻 Autores
+# 🚀 Cómo Ejecutar
 
-👤 Mayleth Sofía Cabarcas Suárez
-👤 Ruben Dario Arellano Marrugo
+### 🔧 EL CEREBRO (Backend - NetBeans)
 
+```
+│
+├── 🛠️ Preparación
+│   └── Clic derecho en el proyecto -> "Clean and Build"
+│
+├── 🏃 Arranque
+│   └── Ubicar 'DemoApplication.java' -> Clic derecho -> "Run File"
+│
+└── 📡 Verificación de Puerto
+    └── En la consola debe decir: "Tomcat started on port(s): 8080"
+``````
+
+### 💻 LA INTERFAZ (Frontend - VS Code)
+
+```
+│
+├── 📂 Apertura
+│   └── Abrir la carpeta 'Frontend' en Visual Studio Code
+│
+├── ⚡ Lanzamiento
+│   └── Clic derecho en 'index.html' -> "Open with Live Server"
+│
+└── 🔗 Enlace
+    └── La web se abrirá en: http://127.0.0.1:5500/index.html
+```
+
+### 🖱️ PRUEBA DE COMUNICACIÓN (Verificación Final)
+
+PRUEBA DE COMUNICACIÓN (Verificación Final)
+
+```
+│
+├── 🛒 Test de Funcionalidad
+│   └── Comprueba que todas funcionalidades sean correctas y se cumplan
+│
+└── 🌸 Test Visual
+    └── Navegar entre categorías para ver el cambio dinámico de fondos
+```
+---
+
+# 👩‍💻 Autores
+
+- 👤 Mayleth Sofía Cabarcas Suárez
+- 👤 Ruben Dario Arellano Marrugo
+
+---
+
+# 💡 Futuras Mejoras
+
+- 🗄️ Base de datos
+- 🔐 Mejorar login de usuarios
+- 💳 Pagos online
+
+-
+---
+
+# 📝 Licencia
+
+Uso educativo
+
+---
+
+## ✨ “Donde la cultura asiática florece en cada clic” 🌸
