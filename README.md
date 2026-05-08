@@ -20,15 +20,36 @@ La plataforma ofrece una experiencia intuitiva para explorar productos de forma 
 
 ---
 
-🎯 Objetivos
+# 🎯 Objetivos
 
-🎯 Objetivo General
+## 🎯 Objetivo General
 
 Desarrollar una tienda virtual que permita a los usuarios explorar y adquirir productos relacionados con el entretenimiento asiático de manera fácil y rápida.
 
-📌 Objetivos Específicos
+## 📌 Objetivos Específicos
 
 - Diseñar una interfaz web atractiva e intuitiva
 - Implementar una API REST con Spring Boot para la gestión de productos 
 - Almacenar la información utilizando archivos locales
 - Permitir la visualización y consulta de productos disponibles 
+---
+
+## ⚙️ Funcionalidades
+
+- ✨ Visualización de productos
+- 🔍 Búsqueda de artículos
+- 📁 Gestión desde backend
+- 📊 Lectura de archivos locales
+
+---
+
+## 🛠️ Tecnologías Utilizadas
+
+| Área | Tecnologías |
+|:----|:----------|
+| **Backend** | Java, Spring Boot |
+| **Frontend** | HTML, Tailwind CSS |
+| **Persistencia** | JSON / CSV |
+| **Herramientas** | NetBeans, VS Code |
+
+
