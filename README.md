@@ -9,11 +9,6 @@ Competencia final
 # 🌸 CherryBlossom ✨
 🛍️Tienda Virtual de Entretenimiento Asiático
 
-"Java" (https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=java&logoColor=white)
-"Spring Boot" (https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
-"HTML" (https://img.shields.io/badge/HTML-239120?style=for-the-badge&logo=html5&logoColor=white)
-"Tailwind" (https://img.shields.io/badge/TailwindCSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
-"Status" (https://img.shields.io/badge/Estado-En%20desarrollo-ff69b4?style=for-the-badge)
 
 ---
 
