@@ -52,4 +52,29 @@ Desarrollar una tienda virtual que permita a los usuarios explorar y adquirir pr
 | **Persistencia** | JSON / CSV |
 | **Herramientas** | NetBeans, VS Code |
 
+---
+
+🏗️ Arquitectura
+
+- 🔹 Backend (API REST)
+- 🔹 Frontend (Interfaz de usuario)
+
+---
+
+🚀 Cómo Ejecutar
+
+🔧 Backend
+
+
+
+💻 Frontend
+
+
+
+---
+
+👩‍💻 Autores
+
+👤 Mayleth Sofía Cabarcas Suárez
+👤 Ruben Dario Arellano Marrugo
 
