@@ -478,6 +478,115 @@
     </div>
     <!-- ===== FIN PANEL ADMIN ===== -->
 
+    <!-- ===== MODAL DETALLE DE PRODUCTO ===== -->
+    <div id="modal-detalle" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[250] p-4">
+        <div class="bg-white rounded-3xl w-full max-w-4xl max-h-[92vh] overflow-hidden shadow-2xl flex flex-col animate-modal-pop">
+
+            <!-- Topbar -->
+            <div class="flex justify-between items-center px-6 py-4 border-b border-gray-100 flex-shrink-0">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-spa text-pink-500"></i>
+                    <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">CherryBlossom Store</span>
+                </div>
+                <button onclick="cerrarDetalle()" class="text-gray-400 hover:text-pink-500 transition-colors w-9 h-9 flex items-center justify-center rounded-full hover:bg-pink-50">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Cuerpo scrolleable -->
+            <div class="flex flex-col md:flex-row overflow-y-auto flex-1">
+
+                <!-- LEFT: galería -->
+                <div class="w-full md:w-[45%] p-6 flex gap-3 flex-shrink-0 bg-slate-50/50">
+
+                    <!-- Miniaturas -->
+                    <div class="flex flex-col gap-2 flex-shrink-0">
+                        <button id="mini-0" onclick="seleccionarMiniatura(0)"
+                                class="w-14 h-[72px] rounded-xl overflow-hidden border-2 border-pink-500 shadow-md flex-shrink-0 transition-all">
+                            <img id="mini-img-0" src="" alt="" class="w-full h-full object-cover">
+                        </button>
+                        <button id="mini-1" onclick="seleccionarMiniatura(1)"
+                                class="w-14 h-[72px] rounded-xl overflow-hidden border-2 border-transparent hover:border-pink-200 shadow-sm flex-shrink-0 transition-all">
+                            <img id="mini-img-1" src="" alt="" class="w-full h-full object-cover">
+                        </button>
+                        <button id="mini-2" onclick="seleccionarMiniatura(2)"
+                                class="w-14 h-[72px] rounded-xl overflow-hidden border-2 border-transparent hover:border-pink-200 shadow-sm flex-shrink-0 transition-all">
+                            <img id="mini-img-2" src="" alt="" class="w-full h-full object-cover">
+                        </button>
+                    </div>
+
+                    <!-- Imagen principal -->
+                    <div class="flex-1 bg-white rounded-2xl overflow-hidden relative shadow-sm border border-pink-50" style="min-height:320px">
+                        <span id="detalle-badge-tipo"
+                              class="absolute top-3 left-3 bg-pink-500 text-white text-[10px] font-black px-3 py-1 rounded-full z-10 uppercase tracking-wide shadow-sm"></span>
+                        <img id="detalle-imagen-principal" src="" alt=""
+                             class="w-full h-full object-contain p-4 transition-opacity duration-300"
+                             onerror="this.src='https://via.placeholder.com/400x500?text=CherryBlossom'">
+                    </div>
+                </div>
+
+                <!-- RIGHT: info -->
+                <div class="w-full md:w-[55%] p-6 flex flex-col border-t md:border-t-0 md:border-l border-gray-100">
+
+                    <!-- Categoría + vendedor -->
+                    <p id="detalle-categoria" class="text-[10px] font-black text-pink-400 uppercase tracking-widest mb-1"></p>
+
+                    <!-- Nombre -->
+                    <h2 id="detalle-nombre" class="text-xl font-black text-gray-800 leading-tight mb-3"></h2>
+
+                    <!-- Estrellas + opiniones -->
+                    <div class="flex items-center gap-2 mb-5 pb-5 border-b border-gray-100">
+                        <span id="detalle-estrellas" class="text-yellow-400 text-base tracking-tighter"></span>
+                        <span id="detalle-reviews" class="text-xs text-gray-400 font-bold underline cursor-pointer"></span>
+                    </div>
+
+                    <!-- Precio -->
+                    <div class="bg-gradient-to-br from-pink-50 to-slate-50 rounded-2xl p-4 mb-4 border border-pink-100">
+                        <div class="flex items-end gap-3 flex-wrap">
+                            <p id="detalle-precio" class="text-3xl font-black text-gray-900"></p>
+                            <span id="detalle-descuento-badge"
+                                  class="bg-red-500 text-white text-xs font-black px-2.5 py-1 rounded-full mb-1 shadow-sm"></span>
+                        </div>
+                        <p id="detalle-precio-original" class="text-sm text-gray-400 line-through mt-1 font-medium"></p>
+                    </div>
+
+                    <!-- Stock -->
+                    <p id="detalle-stock-info" class="text-xs font-bold mb-4"></p>
+
+                    <!-- Cantidad + Agregar al Carro + Favorito -->
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="flex items-center bg-gray-100 rounded-xl overflow-hidden border border-gray-200">
+                            <button onclick="cambiarCantidadDetalle(-1)"
+                                    class="px-4 py-3 hover:bg-pink-500 hover:text-white font-black text-sm transition-colors select-none">−</button>
+                            <span id="detalle-cantidad"
+                                  class="px-4 font-black text-gray-800 text-sm min-w-[2.5rem] text-center select-none">1</span>
+                            <button onclick="cambiarCantidadDetalle(1)"
+                                    class="px-4 py-3 hover:bg-pink-500 hover:text-white font-black text-sm transition-colors select-none">+</button>
+                        </div>
+                        <button id="detalle-btn-carrito" onclick="comprarDesdeDetalle()"
+                                class="flex-1 bg-gray-900 text-white font-black py-3.5 rounded-xl hover:bg-pink-500 transition-all uppercase tracking-widest text-sm flex items-center justify-center gap-2 shadow-lg">
+                            <i class="fa-solid fa-cart-plus"></i> Agregar al Carro
+                        </button>
+                        <button id="detalle-wish-btn" onclick="toggleWishlistDetalle(this)"
+                                class="w-12 h-12 border-2 border-gray-200 rounded-xl flex items-center justify-center text-gray-400 hover:text-pink-500 hover:border-pink-300 transition-all flex-shrink-0">
+                            <i class="fa-regular fa-heart"></i>
+                        </button>
+                    </div>
+
+                    <!-- Especificaciones -->
+                    <div>
+                        <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-list-ul text-pink-300"></i> Especificaciones del producto
+                        </h3>
+                        <div id="detalle-specs" class="grid grid-cols-2 gap-2"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ===== FIN MODAL DETALLE ===== -->
+
     <script src="app.js"></script>
     <script>
         // Funciones auxiliares para el modal de seguimiento

@@ -5,10 +5,12 @@ window.onload = () => {
 
 const API_PRODUCTOS = 'http://localhost:8080/api/productos';
 const API_USUARIOS  = 'http://localhost:8080/api/usuarios';
-let productosLocales = [];
-let carritoArray     = [];
-let sesionActual     = null;
-let filtroActual     = 'TODOS';
+let productosLocales        = [];
+let carritoArray            = [];
+let sesionActual            = null;
+let filtroActual            = 'TODOS';
+let detalleProductoActual   = null;
+let detalleCantidad         = 1;
 
 // ==========================================
 // 1. INICIALIZACIÓN
@@ -232,7 +234,7 @@ function renderizarProductos(lista) {
         const estrellasHTML = '★'.repeat(stars) + '☆'.repeat(5 - stars);
 
         contenedor.innerHTML += `
-            <div class="bg-white rounded-2xl overflow-hidden border border-pink-50 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col group">
+            <div onclick="abrirDetalle(${p.id})" class="bg-white rounded-2xl overflow-hidden border border-pink-50 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col group cursor-pointer">
 
                 <!-- Imagen -->
                 <div class="relative overflow-hidden bg-slate-100 flex-shrink-0" style="height:260px">
@@ -245,7 +247,7 @@ function renderizarProductos(lista) {
                     }
                     ${pocoStock ? `<span class="absolute top-3 right-3 bg-red-500 text-white text-[9px] font-black px-2 py-1 rounded-full z-10 uppercase animate-pulse">¡Últimas ${p.stock}!</span>` : ''}
 
-                    <button onclick="toggleWishlist(this, ${p.id})"
+                    <button onclick="event.stopPropagation(); toggleWishlist(this, ${p.id})"
                             class="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm w-9 h-9 rounded-full flex items-center justify-center text-gray-300 hover:text-pink-500 z-20 shadow-md opacity-0 group-hover:opacity-100 transition-all duration-200">
                         <i class="fa-regular fa-heart text-sm"></i>
                     </button>
@@ -271,7 +273,7 @@ function renderizarProductos(lista) {
                             </p>
                             <p class="text-xl font-black text-gray-900">$${p.precio.toLocaleString()}</p>
                         </div>
-                        <button onclick="${!agotado ? `procesarCompra(${p.id})` : ''}"
+                        <button onclick="event.stopPropagation(); ${!agotado ? `procesarCompra(${p.id})` : ''}"
                                 ${agotado ? 'disabled' : ''}
                                 class="${agotado ? 'bg-gray-100 text-gray-300 cursor-not-allowed' : 'bg-pink-500 hover:bg-gray-900 text-white hover:scale-110 cursor-pointer'} w-11 h-11 rounded-xl transition-all duration-200 flex items-center justify-center shadow-sm">
                             <i class="fa-solid ${agotado ? 'fa-ban' : 'fa-cart-plus'} text-sm"></i>
@@ -665,4 +667,206 @@ function previsualizarImagen(url) {
     } else {
         preview.classList.add('hidden');
     }
+}
+
+// ==========================================
+// 8. MODAL DETALLE DE PRODUCTO
+// ==========================================
+function abrirDetalle(id) {
+    const p = productosLocales.find(pr => pr.id === id);
+    if (!p) return;
+
+    detalleProductoActual = p;
+    detalleCantidad = 1;
+
+    const descuentos = [20, 25, 30, 35, 40, 43, 15, 50];
+    const descuento  = descuentos[p.id % descuentos.length];
+    const precioOriginal = Math.round(p.precio / (1 - descuento / 100) / 1000) * 1000;
+    const stars   = p.id % 2 === 0 ? 5 : 4;
+    const reviews = 10 + ((p.id * 17) % 88);
+    const agotado = p.stock === 0;
+
+    const colores = {
+        MANGA: 'bg-pink-500', MANHWA: 'bg-cyan-500', FIGURA: 'bg-green-500',
+        ALBUM: 'bg-purple-500', ROPA: 'bg-orange-500', ACCESORIO: 'bg-yellow-500', POSTER: 'bg-red-500'
+    };
+
+    // Imagen principal y miniaturas
+    const imgSrc = p.imagenUrl || 'https://via.placeholder.com/400x500?text=CherryBlossom';
+    document.getElementById('detalle-imagen-principal').src = imgSrc;
+    document.getElementById('detalle-imagen-principal').alt = p.nombre;
+    ['mini-img-0', 'mini-img-1', 'mini-img-2'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.src = imgSrc;
+    });
+    seleccionarMiniatura(0);
+
+    // Badge tipo
+    const badgeEl = document.getElementById('detalle-badge-tipo');
+    badgeEl.textContent  = p.tipoProducto;
+    badgeEl.className    = `absolute top-3 left-3 ${colores[p.tipoProducto] || 'bg-gray-500'} text-white text-[10px] font-black px-3 py-1 rounded-full z-10 uppercase tracking-wide shadow-sm`;
+
+    // Info textual
+    document.getElementById('detalle-categoria').textContent   = `CherryBlossom Store · ${p.tipoProducto}`;
+    document.getElementById('detalle-nombre').textContent      = p.nombre;
+    document.getElementById('detalle-estrellas').textContent   = '★'.repeat(stars) + '☆'.repeat(5 - stars);
+    document.getElementById('detalle-reviews').textContent     = `${reviews} opiniones`;
+
+    // Precio
+    document.getElementById('detalle-precio').textContent          = `$${p.precio.toLocaleString()}`;
+    document.getElementById('detalle-precio-original').textContent = `$${precioOriginal.toLocaleString()}`;
+    document.getElementById('detalle-descuento-badge').textContent = `-${descuento}%`;
+
+    // Stock
+    const stockEl = document.getElementById('detalle-stock-info');
+    if (agotado) {
+        stockEl.textContent = '✖ Sin stock disponible';
+        stockEl.className   = 'text-xs font-bold mb-4 text-red-500';
+    } else if (p.stock <= 5) {
+        stockEl.textContent = `⚠️ ¡Solo quedan ${p.stock} unidades!`;
+        stockEl.className   = 'text-xs font-bold mb-4 text-orange-500';
+    } else {
+        stockEl.textContent = `✅ En stock — ${p.stock} disponibles`;
+        stockEl.className   = 'text-xs font-bold mb-4 text-emerald-500';
+    }
+
+    // Cantidad
+    document.getElementById('detalle-cantidad').textContent = '1';
+
+    // Botón carrito
+    const btn = document.getElementById('detalle-btn-carrito');
+    if (agotado) {
+        btn.disabled   = true;
+        btn.className  = 'flex-1 bg-gray-200 text-gray-400 font-black py-3.5 rounded-xl cursor-not-allowed uppercase tracking-widest text-sm flex items-center justify-center gap-2';
+        btn.innerHTML  = '<i class="fa-solid fa-ban"></i> Agotado';
+    } else {
+        btn.disabled   = false;
+        btn.className  = 'flex-1 bg-gray-900 text-white font-black py-3.5 rounded-xl hover:bg-pink-500 transition-all uppercase tracking-widest text-sm flex items-center justify-center gap-2 shadow-lg';
+        btn.innerHTML  = '<i class="fa-solid fa-cart-plus"></i> Agregar al Carro';
+    }
+
+    // Especificaciones
+    const specsEl = document.getElementById('detalle-specs');
+    specsEl.innerHTML = generarSpecs(p).map(s => `
+        <div class="bg-slate-50 rounded-xl px-3 py-2.5 border border-slate-100">
+            <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest">${s.label}</p>
+            <p class="text-xs font-bold text-gray-800 mt-0.5">${s.value}</p>
+        </div>`).join('');
+
+    // Reset wishlist button
+    const wishBtn = document.getElementById('detalle-wish-btn');
+    if (wishBtn) {
+        const icon = wishBtn.querySelector('i');
+        icon.className = 'fa-regular fa-heart';
+        wishBtn.className = 'w-12 h-12 border-2 border-gray-200 rounded-xl flex items-center justify-center text-gray-400 hover:text-pink-500 hover:border-pink-300 transition-all flex-shrink-0';
+    }
+
+    document.getElementById('modal-detalle').classList.remove('hidden');
+}
+
+function cerrarDetalle() {
+    document.getElementById('modal-detalle').classList.add('hidden');
+    detalleProductoActual = null;
+}
+
+function seleccionarMiniatura(idx) {
+    [0, 1, 2].forEach(i => {
+        const el = document.getElementById(`mini-${i}`);
+        if (!el) return;
+        el.className = i === idx
+            ? 'w-14 h-[72px] rounded-xl overflow-hidden border-2 border-pink-500 shadow-md flex-shrink-0 transition-all'
+            : 'w-14 h-[72px] rounded-xl overflow-hidden border-2 border-transparent hover:border-pink-200 shadow-sm flex-shrink-0 transition-all';
+    });
+}
+
+function cambiarCantidadDetalle(delta) {
+    if (!detalleProductoActual) return;
+    const nueva = detalleCantidad + delta;
+    if (nueva < 1 || nueva > detalleProductoActual.stock) return;
+    detalleCantidad = nueva;
+    document.getElementById('detalle-cantidad').textContent = detalleCantidad;
+}
+
+function comprarDesdeDetalle() {
+    const p = detalleProductoActual;
+    if (!p || p.stock <= 0) return;
+    if (detalleCantidad > p.stock) {
+        mostrarNotificacion(`Solo hay ${p.stock} en stock.`, 'error');
+        return;
+    }
+    const itemEnCarrito = carritoArray.find(i => i.producto.id === p.id);
+    if (itemEnCarrito) {
+        const nuevaCantidad = itemEnCarrito.cantidad + detalleCantidad;
+        if (nuevaCantidad > p.stock) {
+            mostrarNotificacion(`No puedes superar el stock de ${p.stock}.`, 'error');
+            return;
+        }
+        itemEnCarrito.cantidad = nuevaCantidad;
+    } else {
+        carritoArray.push({ producto: p, cantidad: detalleCantidad });
+    }
+    dibujarCarrito();
+    mostrarNotificacion(`¡${detalleCantidad}x ${p.nombre} añadido al carrito! 🌸`, 'exito');
+    cerrarDetalle();
+}
+
+function toggleWishlistDetalle(btn) {
+    const icon = btn.querySelector('i');
+    if (icon.classList.contains('fa-regular')) {
+        icon.classList.replace('fa-regular', 'fa-solid');
+        btn.className = 'w-12 h-12 border-2 border-pink-400 rounded-xl flex items-center justify-center text-pink-500 transition-all flex-shrink-0';
+        mostrarNotificacion('¡Añadido a favoritos! 🌸', 'exito');
+    } else {
+        icon.classList.replace('fa-solid', 'fa-regular');
+        btn.className = 'w-12 h-12 border-2 border-gray-200 rounded-xl flex items-center justify-center text-gray-400 hover:text-pink-500 hover:border-pink-300 transition-all flex-shrink-0';
+    }
+}
+
+function generarSpecs(p) {
+    const editoriales = ['Panini', 'Ivrea', 'Norma Editorial', 'ECC Ediciones'];
+    const generosManga = ['Shōnen', 'Seinen', 'Shōjo', 'Josei'];
+    const generosManhwa = ['Romance', 'Acción', 'Fantasía', 'Drama'];
+    const marcasFigura = ['Good Smile Co.', 'Banpresto', 'Kotobukiya', 'Funko Pop!'];
+    const escalas = ['1/8', '1/7', '1/6', '1/4'];
+
+    const mapa = {
+        MANGA: [
+            { label: 'Editorial',  value: editoriales[p.id % 4] },
+            { label: 'Idioma',     value: 'Español' },
+            { label: 'Páginas',    value: `${180 + ((p.id * 23) % 120)} pág.` },
+            { label: 'Formato',    value: '13 × 18 cm' },
+            { label: 'Género',     value: generosManga[p.id % 4] },
+            { label: 'Condición',  value: 'Nuevo' },
+        ],
+        MANHWA: [
+            { label: 'Plataforma', value: ['Lezhin', 'Webtoon', 'KakaoPage', 'Naver'][p.id % 4] },
+            { label: 'Idioma',     value: 'Español' },
+            { label: 'Páginas',    value: `${160 + ((p.id * 19) % 100)} pág.` },
+            { label: 'Formato',    value: 'Full Color' },
+            { label: 'Género',     value: generosManhwa[p.id % 4] },
+            { label: 'Condición',  value: 'Nuevo' },
+        ],
+        FIGURA: [
+            { label: 'Material',   value: 'PVC / ABS' },
+            { label: 'Altura',     value: `${15 + ((p.id * 7) % 20)} cm` },
+            { label: 'Escala',     value: escalas[p.id % 4] },
+            { label: 'Marca',      value: marcasFigura[p.id % 4] },
+            { label: 'Origen',     value: 'Japón' },
+            { label: 'Condición',  value: 'Nuevo / Sellado' },
+        ],
+        ALBUM: [
+            { label: 'Formato',    value: 'CD + Photobook' },
+            { label: 'Pistas',     value: `${10 + ((p.id * 7) % 6)}` },
+            { label: 'Año',        value: `${2021 + (p.id % 4)}` },
+            { label: 'Incluye',    value: 'Photocard + Póster' },
+            { label: 'Idioma',     value: 'Coreano' },
+            { label: 'Condición',  value: 'Nuevo / Sellado' },
+        ],
+    };
+
+    return mapa[p.tipoProducto] || [
+        { label: 'Tipo',       value: p.tipoProducto },
+        { label: 'Stock',      value: `${p.stock} unidades` },
+        { label: 'Condición',  value: 'Nuevo' },
+    ];
 }
