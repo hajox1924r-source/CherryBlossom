@@ -1,0 +1,194 @@
+/* Gradiente Sakura */
+.sakura-gradient {
+    background: linear-gradient(135deg, #ecfeff 0%, #fdf2f8 100%);
+}
+
+/* Categorías Estilo Burbuja */
+.cat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.cat-item:hover {
+    transform: translateY(-5px);
+}
+
+.cat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.cat-item:hover .cat-icon {
+    border-color: white;
+    box-shadow: 0 10px 15px -3px rgba(244, 114, 182, 0.3);
+}
+
+.cat-item span {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #4b5563;
+    text-transform: uppercase;
+}
+
+/* Card del Producto */
+.product-card {
+    background: white;
+    border-radius: 24px;
+    padding: 12px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 2px solid #fce7f3; /* Rosa suave */
+}
+
+.product-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 25px -5px rgba(244, 114, 182, 0.1);
+    border-color: #f472b6;
+}
+
+/* Animación para los marcadores (Menú de navegación) */
+.nav-link {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 4px;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 50%;
+    background-color: #ec4899; /* Rosa de Tailwind (pink-500) */
+    transition: all 0.3s ease-in-out;
+    transform: translateX(-50%);
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+/* Animación de entrada suave para el modal del carrito */
+#modal-carrito > div {
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Transición suave para el fondo de toda la página */
+body {
+    transition: background 1s ease-in-out;
+}
+
+/* Animaciones para las Notificaciones (Toasts) */
+@keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOutRight {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+}
+
+.toast-enter {
+    animation: slideInRight 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.toast-exit {
+    animation: slideOutRight 0.4s ease-in forwards;
+}
+
+/* Desplazamiento suave para toda la página */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Transición suave para el fondo completo */
+body {
+    transition: background-color 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeInScale {
+    0% { opacity: 0; transform: scale(0.95); }
+    100% { opacity: 1; transform: scale(1); }
+}
+.animate-fade-in {
+    animation: fadeInScale 0.4s ease-out forwards;
+}
+
+/* Animación Pop para el Panel de Bienvenida */
+@keyframes modalPop {
+    0% { opacity: 0; transform: scale(0.8) translateY(30px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.animate-modal-pop {
+    animation: modalPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* Animación para que los elementos entren desde abajo */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Animación para que los elementos entren desde arriba */
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Animación para que los elementos entren desde la izquierda */
+@keyframes fadeInLeft {
+    from { opacity: 0; transform: translateX(-30px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-fade-in-down {
+    animation: fadeInDown 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-fade-in-left {
+    animation: fadeInLeft 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Evitar scroll horizontal en el footer por las decoraciones */
+footer {
+    overflow: hidden;
+}
+
+/* Asegurar que el scroll-behavior smooth esté activo para el botón Explorar */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Ajuste para que las portadas no se pisen en móviles */
+@media (max-width: 768px) {
+    .container .flex-col .relative {
+        height: 300px;
+        margin-top: 2rem;
+    }
+    .relative img[alt="Dragon Ball"], 
+    .relative img[alt="Manhwa"] {
+        width: 100px;
+    }
+}
+
+/* Efecto de elevación para los métodos de pago */
+footer img[alt="Métodos de Pago"] {
+    filter: drop-shadow(0 0 10px rgba(236, 72, 153, 0.1));
+}
