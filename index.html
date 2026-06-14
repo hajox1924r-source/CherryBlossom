@@ -83,14 +83,37 @@
     </section>
 
     <main id="seccion-catalogo" class="container mx-auto px-4 pb-20 pt-10">
-        <div class="flex justify-between items-end mb-8 border-b-2 border-pink-100 pb-4">
+
+        <!-- Filtros rápidos por categoría -->
+        <div class="flex flex-wrap gap-2 mb-6">
+            <button onclick="filtrar('TODOS')" class="bg-gray-900 text-white text-xs font-black px-4 py-2 rounded-full uppercase tracking-widest hover:bg-pink-500 transition-all">Ver Todo</button>
+            <button onclick="filtrar('MANGA')" class="bg-pink-100 text-pink-600 text-xs font-black px-4 py-2 rounded-full uppercase tracking-widest hover:bg-pink-500 hover:text-white transition-all">📚 Manga</button>
+            <button onclick="filtrar('MANHWA')" class="bg-cyan-100 text-cyan-600 text-xs font-black px-4 py-2 rounded-full uppercase tracking-widest hover:bg-cyan-500 hover:text-white transition-all">🌸 Manhwa</button>
+            <button onclick="filtrar('FIGURA')" class="bg-green-100 text-green-600 text-xs font-black px-4 py-2 rounded-full uppercase tracking-widest hover:bg-green-500 hover:text-white transition-all">✨ Figuras</button>
+            <button onclick="filtrar('ALBUM')" class="bg-purple-100 text-purple-600 text-xs font-black px-4 py-2 rounded-full uppercase tracking-widest hover:bg-purple-500 hover:text-white transition-all">🎤 K-Pop</button>
+        </div>
+
+        <!-- Encabezado del catálogo -->
+        <div class="flex flex-col md:flex-row md:justify-between md:items-end mb-8 border-b-2 border-pink-100 pb-4 gap-3">
             <div>
                 <h2 id="titulo-seccion" class="text-3xl font-black text-gray-800 uppercase tracking-tight transition-all">Catálogo General</h2>
                 <p id="subtitulo-seccion" class="text-gray-500 text-sm mt-1 transition-all">Descubre todas nuestras novedades</p>
             </div>
-        </div>
-        <div id="contenedor-productos" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
+            <div class="flex items-center gap-3 flex-shrink-0">
+                <span id="contador-productos" class="text-xs font-bold text-gray-400 bg-pink-50 border border-pink-100 px-3 py-1.5 rounded-full whitespace-nowrap"></span>
+                <select id="sort-productos" onchange="ordenarCatalogo(this.value)"
+                        class="text-xs font-bold text-gray-600 bg-white border-2 border-pink-100 rounded-xl px-4 py-2 outline-none focus:border-pink-400 cursor-pointer hover:border-pink-300 transition-all">
+                    <option value="default">Ordenar por…</option>
+                    <option value="precio-asc">Precio: Menor → Mayor</option>
+                    <option value="precio-desc">Precio: Mayor → Menor</option>
+                    <option value="nombre-asc">Nombre: A – Z</option>
+                    <option value="stock-desc">Mayor disponibilidad</option>
+                </select>
             </div>
+        </div>
+
+        <div id="contenedor-productos" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        </div>
     </main>
 
     <footer class="bg-gray-900 text-gray-300 pt-20 pb-10 mt-20 relative overflow-hidden">

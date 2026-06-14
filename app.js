@@ -1,8 +1,6 @@
 window.onload = () => {
     cargarSesion();
-    if (!localStorage.getItem('bienvenidaMostrada')) {
-        document.getElementById('modal-bienvenida').classList.remove('hidden');
-    }
+    document.getElementById('modal-bienvenida').classList.remove('hidden');
 };
 
 const API_PRODUCTOS = 'http://localhost:8080/api/productos';
@@ -10,6 +8,7 @@ const API_USUARIOS  = 'http://localhost:8080/api/usuarios';
 let productosLocales = [];
 let carritoArray     = [];
 let sesionActual     = null;
+let filtroActual     = 'TODOS';
 
 // ==========================================
 // 1. INICIALIZACIÓN
@@ -118,7 +117,6 @@ document.addEventListener('DOMContentLoaded', () => {
 // ==========================================
 function cerrarBienvenida() {
     document.getElementById('modal-bienvenida').classList.add('hidden');
-    localStorage.setItem('bienvenidaMostrada', 'true');
 }
 
 function abrirLogin()    { document.getElementById('modal-login').classList.remove('hidden'); }
@@ -201,43 +199,95 @@ function renderizarProductos(lista) {
     if (!contenedor) return;
     contenedor.innerHTML = '';
 
+    const contador = document.getElementById('contador-productos');
+    if (contador) contador.textContent = `${lista.length} producto${lista.length !== 1 ? 's' : ''}`;
+
+    if (lista.length === 0) {
+        contenedor.innerHTML = `
+            <div class="col-span-full flex flex-col items-center justify-center py-24 text-center">
+                <i class="fa-solid fa-box-open text-pink-200 text-6xl mb-4"></i>
+                <p class="text-gray-400 font-bold text-lg">No hay productos aquí</p>
+                <p class="text-gray-300 text-sm mt-1">Intenta con otra categoría o búsqueda</p>
+            </div>`;
+        return;
+    }
+
+    const colores = {
+        MANGA:     'bg-pink-500',
+        MANHWA:    'bg-cyan-500',
+        FIGURA:    'bg-green-500',
+        ALBUM:     'bg-purple-500',
+        ROPA:      'bg-orange-500',
+        ACCESORIO: 'bg-yellow-500',
+        POSTER:    'bg-red-500'
+    };
+
     lista.forEach(p => {
-        const imgSegura = p.imagenUrl || 'https://via.placeholder.com/300x400?text=Asian+Spot';
-        const colores   = {
-            MANGA:    'bg-pink-500',
-            MANHWA:   'bg-cyan-500',
-            FIGURA:   'bg-green-500',
-            ALBUM:    'bg-purple-500',
-            ROPA:     'bg-orange-500',
-            ACCESORIO:'bg-yellow-500',
-            POSTER:   'bg-red-500'
-        };
-        const badge = colores[p.tipoProducto] || 'bg-gray-500';
+        const imgSegura  = p.imagenUrl || 'https://via.placeholder.com/300x400?text=CherryBlossom';
+        const badge      = colores[p.tipoProducto] || 'bg-gray-500';
+        const agotado    = p.stock === 0;
+        const pocoStock  = !agotado && p.stock <= 5;
+        const stars      = p.id % 2 === 0 ? 5 : 4;
+        const reviews    = 10 + ((p.id * 17) % 88);
+        const estrellasHTML = '★'.repeat(stars) + '☆'.repeat(5 - stars);
 
         contenedor.innerHTML += `
-            <div class="bg-white rounded-2xl p-4 shadow-sm hover:shadow-xl transition-all border-2 border-pink-50 flex flex-col justify-between h-full group">
-                <div class="relative overflow-hidden rounded-xl mb-4 h-64 bg-slate-100">
-                    <span class="absolute top-2 left-2 ${badge} text-white text-[10px] font-bold px-2 py-1 rounded-full z-10 uppercase">${p.tipoProducto}</span>
-                    <img src="${imgSegura}" alt="${p.nombre}" class="object-cover w-full h-full group-hover:scale-110 transition duration-500" onerror="this.src='https://via.placeholder.com/300x400?text=Asian+Spot'">
+            <div class="bg-white rounded-2xl overflow-hidden border border-pink-50 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col group">
+
+                <!-- Imagen -->
+                <div class="relative overflow-hidden bg-slate-100 flex-shrink-0" style="height:260px">
+                    <span class="absolute top-3 left-3 ${badge} text-white text-[10px] font-black px-3 py-1 rounded-full z-10 uppercase tracking-wide shadow-sm">${p.tipoProducto}</span>
+
+                    ${agotado ? `
+                        <div class="absolute inset-0 bg-black/40 z-10 flex items-center justify-center">
+                            <span class="bg-white text-gray-800 font-black text-sm px-5 py-2 rounded-full shadow-lg uppercase tracking-widest">Agotado</span>
+                        </div>` : ''
+                    }
+                    ${pocoStock ? `<span class="absolute top-3 right-3 bg-red-500 text-white text-[9px] font-black px-2 py-1 rounded-full z-10 uppercase animate-pulse">¡Últimas ${p.stock}!</span>` : ''}
+
+                    <button onclick="toggleWishlist(this, ${p.id})"
+                            class="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm w-9 h-9 rounded-full flex items-center justify-center text-gray-300 hover:text-pink-500 z-20 shadow-md opacity-0 group-hover:opacity-100 transition-all duration-200">
+                        <i class="fa-regular fa-heart text-sm"></i>
+                    </button>
+
+                    <img src="${imgSegura}" alt="${p.nombre}"
+                         class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
+                         onerror="this.src='https://via.placeholder.com/300x400?text=CherryBlossom'">
                 </div>
-                <div>
-                    <h4 class="font-bold text-gray-800 text-sm leading-tight mb-2 line-clamp-2">${p.nombre}</h4>
-                    <div class="flex justify-between items-end mt-2">
+
+                <!-- Info del producto -->
+                <div class="p-4 flex flex-col flex-1">
+                    <h4 class="font-bold text-gray-800 text-sm leading-snug line-clamp-2 mb-2 flex-1">${p.nombre}</h4>
+
+                    <div class="flex items-center gap-1 mb-3">
+                        <span class="text-yellow-400 text-xs tracking-tighter">${estrellasHTML}</span>
+                        <span class="text-[10px] text-gray-400 font-bold">(${reviews})</span>
+                    </div>
+
+                    <div class="flex justify-between items-center">
                         <div>
-                            <p class="text-[10px] text-gray-400 uppercase font-bold">Stock: ${p.stock}</p>
-                            <span class="text-xl font-black text-gray-900">$${p.precio.toLocaleString()}</span>
+                            <p class="text-[10px] font-bold ${agotado ? 'text-red-400' : pocoStock ? 'text-orange-500' : 'text-emerald-500'}">
+                                ${agotado ? 'Sin stock' : pocoStock ? `Solo ${p.stock} disp.` : `${p.stock} disponibles`}
+                            </p>
+                            <p class="text-xl font-black text-gray-900">$${p.precio.toLocaleString()}</p>
                         </div>
-                        <button onclick="procesarCompra(${p.id})" class="bg-gray-900 text-white w-10 h-10 rounded-xl hover:bg-pink-500 transition-colors flex items-center justify-center">
-                            <i class="fa-solid fa-cart-plus"></i>
+                        <button onclick="${!agotado ? `procesarCompra(${p.id})` : ''}"
+                                ${agotado ? 'disabled' : ''}
+                                class="${agotado ? 'bg-gray-100 text-gray-300 cursor-not-allowed' : 'bg-pink-500 hover:bg-gray-900 text-white hover:scale-110 cursor-pointer'} w-11 h-11 rounded-xl transition-all duration-200 flex items-center justify-center shadow-sm">
+                            <i class="fa-solid ${agotado ? 'fa-ban' : 'fa-cart-plus'} text-sm"></i>
                         </button>
                     </div>
                 </div>
-            </div>
-        `;
+            </div>`;
     });
 }
 
 function filtrar(categoria) {
+    filtroActual = categoria;
+
+    const sortEl = document.getElementById('sort-productos');
+    if (sortEl) sortEl.value = 'default';
+
     const config = {
         'MANGA':  { c: 'bg-orange-50', t: '🌸 Colección Manga',       s: 'Las mejores historias en blanco y negro' },
         'MANHWA': { c: 'bg-cyan-50',   t: '💥 Webtoons y Manhwa',      s: 'Acción, magia y romance a todo color' },
@@ -255,6 +305,33 @@ function filtrar(categoria) {
         renderizarProductos(productosLocales);
     } else {
         renderizarProductos(productosLocales.filter(p => p.tipoProducto === categoria));
+    }
+}
+
+function ordenarCatalogo(criterio) {
+    let base = filtroActual === 'TODOS'
+        ? [...productosLocales]
+        : productosLocales.filter(p => p.tipoProducto === filtroActual);
+
+    if      (criterio === 'precio-asc')  base.sort((a, b) => a.precio - b.precio);
+    else if (criterio === 'precio-desc') base.sort((a, b) => b.precio - a.precio);
+    else if (criterio === 'nombre-asc')  base.sort((a, b) => a.nombre.localeCompare(b.nombre));
+    else if (criterio === 'stock-desc')  base.sort((a, b) => b.stock - a.stock);
+
+    renderizarProductos(base);
+}
+
+function toggleWishlist(btn, id) {
+    const icon = btn.querySelector('i');
+    if (icon.classList.contains('fa-regular')) {
+        icon.classList.replace('fa-regular', 'fa-solid');
+        btn.style.color = '#ec4899';
+        btn.style.opacity = '1';
+        mostrarNotificacion('¡Añadido a favoritos! 🌸', 'exito');
+    } else {
+        icon.classList.replace('fa-solid', 'fa-regular');
+        btn.style.color = '';
+        btn.style.opacity = '';
     }
 }
 
